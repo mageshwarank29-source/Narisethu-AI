@@ -1,0 +1,10 @@
+{
+  "name": "NariSethu - Tamil Voice Welfare Scheme Assistant",
+  "description": "நாரிசேது: எளிய தமிழில் பெண்களுக்கான அரசு நலத்திட்டங்களை விளக்கும் குரல் வழி உதவியாளர்.",
+  "requestFramePermissions": [
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
