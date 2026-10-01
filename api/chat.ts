@@ -1,4 +1,4 @@
-import { handleChatMessage } from './chatHandler';
+import { handleChatMessage } from './chatHandler.ts';
 
 export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') {

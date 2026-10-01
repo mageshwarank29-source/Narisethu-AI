@@ -1,14 +1,12 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
-import path from 'path';
 import { defineConfig, Plugin } from 'vite';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import { fileURLToPath } from 'node:url';
 
 function apiPlugin(): Plugin {
   return {
     name: 'narisethu-api',
+    apply: 'serve', // Strictly only used during local development server
     configureServer(server) {
       server.middlewares.use(async (req, res, next) => {
         if (!req.url?.startsWith('/api/')) {
@@ -19,7 +17,7 @@ function apiPlugin(): Plugin {
 
         try {
           if (req.url === '/api/schemes' && req.method === 'GET') {
-            const { VERIFIED_SCHEMES } = await import('./src/data/schemes');
+            const { VERIFIED_SCHEMES } = await import('./src/data/schemes.ts');
             res.end(JSON.stringify({ schemes: VERIFIED_SCHEMES }));
             return;
           }
@@ -32,7 +30,7 @@ function apiPlugin(): Plugin {
             req.on('end', async () => {
               try {
                 const body = JSON.parse(bodyStr || '{}');
-                const { handleChatMessage } = await import('./api/chatHandler');
+                const { handleChatMessage } = await import('./api/chatHandler.ts');
                 const reply = await handleChatMessage(body.messages || [], body.keypadOption);
                 res.end(JSON.stringify({ reply }));
               } catch (err: any) {
@@ -55,23 +53,31 @@ function apiPlugin(): Plugin {
   };
 }
 
-export default defineConfig(() => {
+export default defineConfig(({ command }) => {
+  const isDev = command === 'serve';
+
   return {
-    root: path.resolve(__dirname),
-    plugins: [react(), tailwindcss(), apiPlugin()],
+    plugins: [
+      react(),
+      tailwindcss(),
+      ...(isDev ? [apiPlugin()] : [])
+    ],
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, '.'),
-        '/src': path.resolve(__dirname, 'src'),
+        '@': fileURLToPath(new URL('.', import.meta.url)),
+        '/src': fileURLToPath(new URL('./src', import.meta.url)),
       },
+    },
+    build: {
+      outDir: 'dist',
+      emptyOutDir: true,
+      chunkSizeWarningLimit: 1000,
+      watch: null,
     },
     server: {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
-      // Do not modify—file watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',
-      // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
       watch: process.env.DISABLE_HMR === 'true' ? null : {},
     },
   };
 });
-

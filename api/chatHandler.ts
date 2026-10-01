@@ -1,5 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
-import { VERIFIED_SCHEMES, Scheme } from '../src/data/schemes';
+import { VERIFIED_SCHEMES, Scheme } from '../src/data/schemes.ts';
 
 export interface ChatMessage {
   role: 'user' | 'assistant' | 'system';

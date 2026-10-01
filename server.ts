@@ -2,8 +2,8 @@ import express from 'express';
 import path from 'path';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
-import { VERIFIED_SCHEMES } from './src/data/schemes';
-import { handleChatMessage } from './api/chatHandler';
+import { VERIFIED_SCHEMES } from './src/data/schemes.ts';
+import { handleChatMessage } from './api/chatHandler.ts';
 
 dotenv.config();
 

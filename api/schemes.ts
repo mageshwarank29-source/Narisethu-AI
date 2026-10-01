@@ -1,4 +1,4 @@
-import { VERIFIED_SCHEMES } from '../src/data/schemes';
+import { VERIFIED_SCHEMES } from '../src/data/schemes.ts';
 
 export default function handler(req: any, res: any) {
   if (req.method !== 'GET') {
