@@ -19,7 +19,7 @@ function apiPlugin(): Plugin {
 
         try {
           if (req.url === '/api/schemes' && req.method === 'GET') {
-            const { VERIFIED_SCHEMES } = await import('./src/data/schemes.ts');
+            const { VERIFIED_SCHEMES } = await import('./src/data/schemes');
             res.end(JSON.stringify({ schemes: VERIFIED_SCHEMES }));
             return;
           }
@@ -32,7 +32,7 @@ function apiPlugin(): Plugin {
             req.on('end', async () => {
               try {
                 const body = JSON.parse(bodyStr || '{}');
-                const { handleChatMessage } = await import('./api/chatHandler.ts');
+                const { handleChatMessage } = await import('./api/chatHandler');
                 const reply = await handleChatMessage(body.messages || [], body.keypadOption);
                 res.end(JSON.stringify({ reply }));
               } catch (err: any) {
@@ -57,10 +57,12 @@ function apiPlugin(): Plugin {
 
 export default defineConfig(() => {
   return {
+    root: path.resolve(__dirname),
     plugins: [react(), tailwindcss(), apiPlugin()],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
+        '/src': path.resolve(__dirname, 'src'),
       },
     },
     server: {
